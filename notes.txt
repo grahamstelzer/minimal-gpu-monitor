@@ -1,0 +1,47 @@
+run:
+    gcc -pthread -ldl -o mgm mgm.c
+
+
+methodology?:
+    general:
+        for cuda hooks:
+            TLDR:
+                Program calls cudaMalloc -> calls your hook -> dlsym(RTLD_NEXT) finds real cudaMalloc -> call real function
+            docs for actual functions:
+                https://developer.download.nvidia.com/compute/DevZone/docs/html/C/doc/html/group__CUDART__MEMORY_gb17fef862d4d1fefb9dba35bd62a187e.html#gb17fef862d4d1fefb9dba35bd62a187e
+            not tldr:
+                1. "intercept" before they reach cuda runtime
+                2. log info (alloc size)
+                3. pass to cuda runtime
+
+                dlsym:
+                    "dynamic loader symbol"
+                    "find address of named symbol within specified library"
+                    from docs https://pubs.opengroup.org/onlinepubs/009604299/functions/dlsym.html:
+                        #include <dlfcn.h>
+                        void *dlsym(void *restrict handle, const char *restrict name);
+                RTLD_NEXT:
+                    "dynamic linker is instructed to search for the next occurrence of the specified
+                        symbol after the current library"
+                    NOTE: in our case, this "library" is loaded before the cuda runtime library
+                    from docs https://pubs.opengroup.org/onlinepubs/009604299/functions/dlsym.html:
+                        "The RTLD_NEXT flag is useful to navigate an intentionally created hierarchy 
+                            of multiply-defined symbols created through interposition. For example, if 
+                            a program wished to create an implementation of malloc() that embedded some 
+                            statistics gathering about memory allocations, such an implementation could 
+                            use the real malloc() definition to perform the memory allocation-and itself 
+                            only embed the necessary logic to implement the statistics gathering function."
+
+    typedef cudaError_t ...
+    if (!real_free) real_free = (cudaFree_t)dlsym(RTLD_NEXT, "cudaFree");
+
+functions?:
+    dlsym(RTLD_NEXT, "cudaMalloc");
+        ... see methodology section
+    __attribute__((constructor))
+        GNU Compiler Collection extension that says the function below should be executed automcatically before main()
+
+c fundamentals/syntax i've forgotton:
+    cudaError_t cudaMalloc(void **ptr, size_t size) { ...
+    flushff
+    static (need to get more depth)

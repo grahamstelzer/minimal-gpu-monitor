@@ -1,0 +1,9 @@
+{
+    "files.associations": {
+        "stdio.h": "c",
+        "stdlib.h": "c",
+        "bitset": "c",
+        "__locale": "c",
+        "cuda_runtime.h": "c"
+    }
+}

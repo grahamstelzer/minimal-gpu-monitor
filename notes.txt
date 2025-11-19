@@ -1,7 +1,3 @@
-run:
-    gcc -pthread -ldl -o mgm mgm.c
-
-
 methodology?:
     general:
         for cuda hooks:

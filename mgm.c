@@ -144,42 +144,37 @@ void start_monitor() {
 
 
 
-__attribute__((constructor))
-static void mgm_init() {
-    int device_count = 0;
-    cudaError_t err = cudaGetDeviceCount(&device_count);
+// __attribute__((constructor))
+// static void mgm_init() {
+//     int device_count = 0;
+//     cudaError_t err = cudaGetDeviceCount(&device_count);
 
-    if (err != cudaSuccess) {
-        fprintf(stderr, "[mgm] cudaGetDeviceCount failed: %s\n", cudaGetErrorString(err));
-        return;
-    }
+//     if (err != cudaSuccess) {
+//         fprintf(stderr, "[mgm] cudaGetDeviceCount failed: %s\n", cudaGetErrorString(err));
+//         return;
+//     }
 
-    fprintf(stderr, "[mgm] Detected %d CUDA device(s)\n", device_count);
+//     fprintf(stderr, "[mgm] Detected %d CUDA device(s)\n", device_count);
 
-    for (int d = 0; d < device_count; ++d) {
-        cudaDeviceProp prop;
-        cudaGetDeviceProperties(&prop, d);
+//     for (int d = 0; d < device_count; ++d) {
+//         cudaDeviceProp prop;
+//         cudaGetDeviceProperties(&prop, d);
 
-        size_t freeMem = 0, totalMem = 0;
-        cudaSetDevice(d);
-        cudaMemGetInfo(&freeMem, &totalMem);
+//         size_t freeMem = 0, totalMem = 0;
+//         cudaSetDevice(d);
+//         cudaMemGetInfo(&freeMem, &totalMem);
 
-        fprintf(stderr,
-            "[mgm] GPU %d: %s\n"
-            "        Total memory: %zu bytes\n"
-            "        Free memory:  %zu bytes\n",
-            d,
-            prop.name,
-            totalMem,
-            freeMem
-        );
-    }
-}
-
-
-
-
-
+//         fprintf(stderr,
+//             "[mgm] GPU %d: %s\n"
+//             "        Total memory: %zu bytes\n"
+//             "        Free memory:  %zu bytes\n",
+//             d,
+//             prop.name,
+//             totalMem,
+//             freeMem
+//         );
+//     }
+// }
 
 
 // int main(int argc, char **argv) {

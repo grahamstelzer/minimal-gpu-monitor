@@ -1,5 +1,5 @@
 run:
-    gcc -pthread -ldl -o mgm mgm.c
+    gcc -shared -fPIC -pthread -ldl -o mgm.so mgm.c
 
-use:
-    LD_PRELOAD=...<path to executable>.../minimal-gpu-monitor/mgm.so python3 vp-inference.py
+use ex:
+    $ LD_PRELOAD=<path to repo>/minimal-gpu-monitor/mgm.so python3 benchmark.py 
